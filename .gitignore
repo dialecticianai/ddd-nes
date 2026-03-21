@@ -178,5 +178,8 @@ recordings/
 # Local development aids (not part of project)
 NEXT_SESSION.md
 
+# Hegel workflow state (local, ephemeral)
+.hegel/
+
 # Future: Exclude specific tool outputs as needed
 forks/

@@ -1,8 +1,8 @@
 # Toys Status
 
-**Last updated**: 2025-10-08
+**Last updated**: 2026-03-21
 
-## Test Suite: 140/140 passing (100%)
+## Test Suite: 141/141 passing (100%)
 
 | Toy | Tests | Status | Notes |
 |-----|-------|--------|-------|
@@ -15,12 +15,13 @@
 | toy6_audio | 7/7 ✓ | Complete | Pulse channel tone generation + FFT validation |
 | toy7_palettes | 15/15 ✓ | Complete | Palette RAM + mirroring + jsnes bug fix |
 | toy8_vram_buffer | 52/52 ✓ | Complete | VRAM update buffer |
+| toy9_sprite0 | 1/1 ✓ | Complete | Sprite 0 hit detection (play-spec.pl only) |
 | debug/0_survey | - | Complete | Emulator research |
 | debug/1_jsnes_wrapper | - | Complete | jsnes harness (16 tests) |
 | debug/2_tetanes | - | Complete | TetaNES investigation (rejected) |
 
 ## Next Candidates
 
-1. **toy8_sprite0** - Sprite 0 hit detection (status bar splits)
-2. **toy9_music_engine** - FamiTone2/FamiStudio integration
-3. **toy4_graphics_workflow** - Asset pipeline end-to-end
+1. **toy10_graphics_workflow** - Asset pipeline end-to-end (PNG → CHR-ROM)
+2. **toy11_attributes** - Attribute table and color granularity
+3. **toy12_metatiles** - 2x2 metatile compression/decompression

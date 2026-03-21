@@ -16,6 +16,8 @@ This project follows **Dialectic-Driven Development (DDD)** in **Greenfield Mode
 
 **Long-term deliverable**: Compile an mdbook from blog posts, `learnings/` docs, and meta-docs - a cleaned up, streamlined condensation of the NESdev wiki. Oriented for LLM agents but human-friendly (clear, concise language works for both). The mdbook source material is being written now (not separate future work).
 
+**Workflow orchestration**: Use **Hegel** (`hegel` CLI) to manage DDD workflows. See `HEGEL.md` for full command reference. Key commands: `hegel status` (check state), `hegel start <workflow>` (begin workflow), `hegel next` (advance phase). Use `hegel start discovery` for new toys, `hegel start cowboy` for straightforward tasks.
+
 ## Operational Modes
 
 ### Discovery Mode (Primary in Early Phase)
