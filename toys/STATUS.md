@@ -2,7 +2,7 @@
 
 **Last updated**: 2026-03-21
 
-## Test Suite: 141/141 passing (100%)
+## Test Suite: 153/153 passing (100%)
 
 | Toy | Tests | Status | Notes |
 |-----|-------|--------|-------|
@@ -16,6 +16,7 @@
 | toy7_palettes | 15/15 ✓ | Complete | Palette RAM + mirroring + jsnes bug fix |
 | toy8_vram_buffer | 52/52 ✓ | Complete | VRAM update buffer |
 | toy9_sprite0 | 1/1 ✓ | Complete | Sprite 0 hit detection (play-spec.pl only) |
+| toy10_graphics_workflow | 12/12 ✓ | Complete | PNG → CHR-ROM → nametable pipeline |
 | debug/0_survey | - | Complete | Emulator research |
 | debug/1_jsnes_wrapper | - | Complete | jsnes harness (16 tests) |
 | debug/2_tetanes | - | Complete | TetaNES investigation (rejected) |
