@@ -2,7 +2,7 @@
 
 **Last updated**: 2026-03-21
 
-## Test Suite: 287/287 passing (100%)
+## Test Suite: 304/304 passing (100%)
 
 | Toy | Tests | Status | Notes |
 |-----|-------|--------|-------|
@@ -27,6 +27,7 @@
 | toy18_scrolling_budget | 10/10 ✓ | Complete | Column streaming + Phase 2 cycle counting |
 | toy19_chr_ram | 11/11 ✓ | Complete | CHR-RAM tile copy from PRG-ROM |
 | toy20_compression | 11/11 ✓ | Complete | RLE decompression (bit-7 flag format) |
+| toy21_math | 17/17 ✓ | Complete | 8x8 multiply + 8-bit divide routines |
 | debug/0_survey | - | Complete | Emulator research |
 | debug/1_jsnes_wrapper | - | Complete | jsnes harness (16 tests) |
 | debug/2_tetanes | - | Complete | TetaNES investigation (rejected) |
