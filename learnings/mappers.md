@@ -267,6 +267,17 @@ reset_stub:
 - Want PRG-RAM (save games)
 - Willing to handle serial protocol complexity
 
+### ✅ MMC1 Validated (toy14)
+
+**Confirmed via toy14_mmc1** (4/4 tests passing):
+- jsnes `Mappers[1]` correctly emulates 5-write serial shift register
+- Control register init ($0E → $8000): fixed $C000, CHR-RAM, vertical mirroring
+- PRG bank switch (serial write to $E000): all 3 switchable banks verified
+- Mapper reset ($80 → $8000) works for clearing shift register state
+- NMI safety: reset mapper + restore bank in handler
+- nes.cfg identical to UNROM — only iNES header mapper byte differs
+- Per-bank reset stubs not needed for jsnes (may be needed on some real hardware MMC1 revisions)
+
 ---
 
 ## Converting NROM → CHR-RAM (Step-by-Step)

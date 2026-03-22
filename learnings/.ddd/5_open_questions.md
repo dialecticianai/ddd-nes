@@ -252,13 +252,14 @@
   - Fixed bank has ~16KB available (minus vectors)
 - **Next step**: Add common utils (controller read, OAM DMA) to fixed bank in main game
 
-### ✅ MMC1 Implementation (ANSWERED)
+### ✅ MMC1 Implementation (ANSWERED + VALIDATED)
 **Q5.6**: MMC1 interrupt safety - which solution?
-- ✅ **ANSWERED**: Reset + save/restore (simpler)
-  - Source: `learnings/mappers.md` - Both strategies documented
-  - Forces fixed-$C000 mode (acceptable constraint)
-  - Upgrade to retry flag only if needed
-- **Next step**: Implement reset+save in MMC1 test ROM, validate with NMI interrupts
+- ✅ **ANSWERED + VALIDATED**: Reset + save/restore pattern confirmed in toy14
+  - Source: `toys/toy14_mmc1/LEARNINGS.md`
+  - Serial protocol works in jsnes (5-write shift register)
+  - NMI handler: reset mapper ($80→$8000) + restore bank via serial write
+  - nes.cfg identical to UNROM — only iNES header mapper number changes
+  - Per-bank reset stubs NOT tested (jsnes initializes correctly without them)
 
 ---
 
