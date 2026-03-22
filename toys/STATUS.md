@@ -2,7 +2,7 @@
 
 **Last updated**: 2026-03-21
 
-## Test Suite: 255/255 passing (100%)
+## Test Suite: 265/265 passing (100%)
 
 | Toy | Tests | Status | Notes |
 |-----|-------|--------|-------|
@@ -24,6 +24,7 @@
 | toy15_state_machine | 5/5 ✓ | Complete | 3-state game flow with controller edge detection |
 | toy16_entities | 38/38 ✓ | Complete | Entity storage + OAM sync (4 entities) |
 | toy17_collision | 4/4 ✓ | Complete | AABB collision detection (3 scenarios) |
+| toy18_scrolling_budget | 10/10 ✓ | Complete | Column streaming + Phase 2 cycle counting |
 | debug/0_survey | - | Complete | Emulator research |
 | debug/1_jsnes_wrapper | - | Complete | jsnes harness (16 tests) |
 | debug/2_tetanes | - | Complete | TetaNES investigation (rejected) |
