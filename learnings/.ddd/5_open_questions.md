@@ -9,8 +9,8 @@
 ## Quick Summary
 
 **Study complete**: 52/100+ wiki pages (all core priorities)
-**Open questions**: 31 practical implementation questions
-**Answered/decided**: 12 questions (sound engine, mapper strategy, optimization policy, graphics pipeline, attributes, metatiles)
+**Open questions**: 29 practical implementation questions
+**Answered/decided**: 14 questions (sound engine, mapper strategy, optimization policy, graphics pipeline, attributes, metatiles, UNROM bank switching)
 **Primary blockers**: None - all questions answerable through practice
 
 **Categories**:
@@ -18,11 +18,11 @@
 2. Graphics Asset Pipeline (1 open, **4 answered**)
 3. Audio Implementation (3 open, **3 answered**)
 4. Game Architecture & Patterns (7 open)
-5. Mapper Selection & Implementation (3 open, **3 answered**)
+5. Mapper Selection & Implementation (1 open, **5 answered**)
 6. Optimization & Performance (6 open, **1 answered**)
 7. Testing & Validation (4 open)
 
-**Total**: 31 open questions, **12 answered/decided** (43 total)
+**Total**: 29 open questions, **14 answered/decided** (43 total)
 
 ---
 
@@ -236,19 +236,21 @@
 - Source: `learnings/mappers.md` - Mapper decision matrix
 - **Next step**: Track ROM growth during development, migrate when thresholds hit
 
-### UNROM Implementation
-**Q5.4**: ✅ **PARTIALLY ANSWERED**: Bus conflict handling in practice?
-- ✅ **Theory**: Always use lookup table pattern (standard)
-  - Source: `learnings/mappers.md` - banktable code example provided
-  - Place in fixed bank ($C000-$FFFF)
-- **Practice needed**: How much space does banktable consume? Organization strategy?
-- **Answer via**: Implement UNROM bankswitch in test ROM
+### ✅ UNROM Implementation (ANSWERED)
+**Q5.4**: Bus conflict handling in practice?
+- ✅ **ANSWERED**: `sta banktable, Y` pattern works (banktable[N] = N in RODATA, fixed bank)
+  - Source: `toys/toy13_unrom/LEARNINGS.md`
+  - Banktable = N bytes (one per bank, e.g. 4 bytes for 4-bank UNROM)
+  - jsnes doesn't emulate bus conflicts but pattern is correct for real hardware
+- **Next step**: Use same pattern in main game
 
 **Q5.5**: Fixed bank organization?
-- Vectors, NMI, IRQ, bankswitch routine (required)
-- Common utils (controller read, OAM DMA, etc.)?
-- How much space for fixed bank code?
-- **Answer via**: Implement UNROM test ROM, measure fixed bank usage
+- ✅ **ANSWERED**: Fixed bank ($C000-$FFFF) contains: vectors, reset, NMI handler, bankswitch routine + bus conflict table
+  - Source: `toys/toy13_unrom/LEARNINGS.md`
+  - nes.cfg pattern: separate MEMORY regions per bank, all `file=%O`, same `start=$8000`
+  - NMI handler must restore bank: `ldy current_bank; tya; sta banktable, Y`
+  - Fixed bank has ~16KB available (minus vectors)
+- **Next step**: Add common utils (controller read, OAM DMA) to fixed bank in main game
 
 ### ✅ MMC1 Implementation (ANSWERED)
 **Q5.6**: MMC1 interrupt safety - which solution?

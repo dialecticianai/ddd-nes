@@ -151,6 +151,22 @@ bankswitch_y:
   .byte $00       ; No special PPU
 ```
 
+### ✅ UNROM Validated (toy13)
+
+**Confirmed via toy13_unrom** (4/4 tests passing):
+- jsnes `Mappers[2]` correctly emulates bank switching
+- Bus conflict table pattern works (emulator doesn't enforce, but pattern is hardware-correct)
+- ca65/ld65 multi-bank nes.cfg: separate MEMORY regions per bank, all `file=%O`, same `start=$8000`
+- NMI handler must restore bank: `ldy current_bank; tya; sta banktable, Y`
+- Marker-byte verification pattern: unique byte at $8000 in each bank, read after switch
+
+**ca65/ld65 nes.cfg pattern** for 4-bank UNROM:
+- `BANK0: start=$8000, size=$4000` through `BANK2` (switchable)
+- `BANK3: start=$C000, size=$3FFA` + `ROMV: start=$FFFA, size=$0006` (fixed)
+- Each bank gets its own segment (`BANK0DAT`, `BANK1DAT`, etc.)
+
+---
+
 ### MMC1 (Mapper 1) — Nintendo's First ASIC
 
 **Specs**:
