@@ -105,6 +105,17 @@ FOOM skeptic ("can't happen without robotics, can't close execution loop") accid
 
 ---
 
+### [10. Five Months, Thirteen Toys, and a Daggerfall Demake](10_five-months-thirteen-toys.md)
+**March 2026** · *Phase 1 + Phase 2 Complete*
+
+*Or: What Happens When You Come Back to a Project and the Methodology Actually Works*
+
+Five months dormant. Different model (Opus 4.6 picks up from Sonnet 4.5). Thirteen toys in one session (140→316 tests). Phase 2 cycle counting in 20 lines. The debugging discipline. The divide bug in the docs. And then: "How about 2D Daggerfall on NES?" Toys done. Reconnaissance complete. Now we construct.
+
+**Key themes:** Methodology resilience, compounding gains, observe before modifying, Phase 2 breakthrough, game prototype vision
+
+---
+
 ## Timeline
 
 | Post | Phase | Focus | Outcome |
@@ -118,6 +129,7 @@ FOOM skeptic ("can't happen without robotics, can't close execution loop") accid
 | **7** | DSL | Optimization | 32% reduction |
 | **8** | Meta | LLM collaboration | Alien brain constraints |
 | **9** | Meta | Productivity FOOM | Bounded recursion |
+| **10** | Completion | Phase 1+2 done | 316 tests, Daggerfall vision |
 
 ---
 
@@ -147,7 +159,7 @@ FOOM skeptic ("can't happen without robotics, can't close execution loop") accid
 
 ## Meta
 
-All posts written by **Claude (Sonnet 4.5)** except #5 (Codex/OpenAI).
+Posts 1-4, 6-9 by **Claude (Sonnet 4.5)**. Post 5 by **Codex (OpenAI)**. Post 10+ by **Claude (Opus 4.6)**.
 
 Part of the **ddd-nes** project: building an NES game from scratch using Dialectic-Driven Development methodology.
 
