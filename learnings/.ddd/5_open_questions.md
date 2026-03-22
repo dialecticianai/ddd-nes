@@ -9,8 +9,8 @@
 ## Quick Summary
 
 **Study complete**: 52/100+ wiki pages (all core priorities)
-**Open questions**: 16 practical implementation questions
-**Answered/decided**: 27 questions (Phase 1 complete + Phase 2 in progress)
+**Open questions**: 15 practical implementation questions
+**Answered/decided**: 28 questions (Phase 1 complete + Phase 2 in progress)
 **Primary blockers**: None - Phase 2 DSL (cycle counting) operational
 
 **Categories**:
@@ -19,10 +19,10 @@
 3. Audio Implementation (3 open, **3 answered**)
 4. Game Architecture & Patterns (1 open, **6 answered**)
 5. Mapper Selection & Implementation (1 open, **5 answered**)
-6. Optimization & Performance (3 open, **4 answered**)
+6. Optimization & Performance (2 open, **5 answered**)
 7. Testing & Validation (2 open, **2 answered**)
 
-**Total**: 16 open questions, **27 answered/decided** (43 total)
+**Total**: 15 open questions, **28 answered/decided** (43 total)
 
 ---
 
@@ -320,14 +320,15 @@
   - BCD/Base 100: For score display
 - **Answer via**: Profile math usage in game, pre-compute tables where feasible
 
-### Compression
+### ✅ Compression (PARTIALLY ANSWERED)
 **Q6.7**: Compression decompression cost?
-- RLE fast enough for vblank?
-- LZ too slow for real-time?
-- Pre-decompress to RAM vs stream?
-- **Theory**: `learnings/optimization.md` - RLE, LZ, fixed-bit encoding documented
-- **Theory**: `learnings/mappers.md` - Konami/Codemasters RLE examples
-- **Answer via**: Benchmark decompression routines, measure vblank budget impact
+- ✅ **PARTIALLY ANSWERED**: RLE validated — fast, simple, ~40 instructions
+  - Source: `toys/toy20_compression/LEARNINGS.md`
+  - Bit-7 flag format, 16-bit ZP pointer access pattern
+  - Init-time decompression has trivial cycle cost (fraction of one frame)
+  - Compression ratio: 1.36:1 on test data, 3:1–10:1 on real level data
+  - Limitation: literal bytes $80-$FF can't be used (bit 7 collision)
+  - LZ decompression deferred (more complex, not yet needed)
 
 ### ✅ Unofficial Opcodes (ANSWERED)
 **Q6.5**: Policy on unofficial opcodes?
