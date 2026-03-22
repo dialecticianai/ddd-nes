@@ -82,6 +82,14 @@ This project follows **Dialectic-Driven Development (DDD)** in **Greenfield Mode
 - Document test results in LEARNINGS.md
 - **All testing must be automated** - use test harness, build tools, write scripts
 
+**CRITICAL: Observe Before Modifying**
+- When output looks wrong, **inspect actual state first** — don't rewrite code
+- Use `assert_ram` / `assert_tile` with code refs to print values: `assert_ram 0x14 => sub { diag "val=$_"; 1 }`
+- Ask "am I looking in the right place?" before "is the write broken?"
+- Trust validated patterns — if PPUADDR/PPUDATA works in 5 other toys, it works here too
+- The NES does exactly what you told it. If output is unexpected, your expectations are wrong, not the hardware.
+- **Never rewrite working code to debug a test failure.** Print the actual values first.
+
 **CRITICAL: Memory Map Everything**
 - Update CODE_MAP.md with memory layout decisions
 - Document what's at each RAM address ($0000-$00FF: zero page, $0200-$02FF: sprites, etc.)
