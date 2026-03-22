@@ -1,8 +1,8 @@
 # Toys Status
 
-**Last updated**: 2026-03-21
+**Last updated**: 2026-03-22
 
-## Test Suite: 304/304 passing (100%)
+## Test Suite: 316/316 passing (100%)
 
 | Toy | Tests | Status | Notes |
 |-----|-------|--------|-------|
@@ -28,6 +28,7 @@
 | toy19_chr_ram | 11/11 ✓ | Complete | CHR-RAM tile copy from PRG-ROM |
 | toy20_compression | 11/11 ✓ | Complete | RLE decompression (bit-7 flag format) |
 | toy21_math | 17/17 ✓ | Complete | 8x8 multiply + 8-bit divide routines |
+| toy22_audio_multi | 12/12 ✓ | Complete | Multi-channel APU + SFX priority |
 | debug/0_survey | - | Complete | Emulator research |
 | debug/1_jsnes_wrapper | - | Complete | jsnes harness (16 tests) |
 | debug/2_tetanes | - | Complete | TetaNES investigation (rejected) |
