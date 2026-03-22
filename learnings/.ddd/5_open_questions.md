@@ -9,8 +9,8 @@
 ## Quick Summary
 
 **Study complete**: 52/100+ wiki pages (all core priorities)
-**Open questions**: 15 practical implementation questions
-**Answered/decided**: 28 questions (Phase 1 complete + Phase 2 in progress)
+**Open questions**: 14 practical implementation questions
+**Answered/decided**: 29 questions (Phase 1 + Phase 2 nearly complete)
 **Primary blockers**: None - Phase 2 DSL (cycle counting) operational
 
 **Categories**:
@@ -19,10 +19,10 @@
 3. Audio Implementation (3 open, **3 answered**)
 4. Game Architecture & Patterns (1 open, **6 answered**)
 5. Mapper Selection & Implementation (1 open, **5 answered**)
-6. Optimization & Performance (2 open, **5 answered**)
+6. Optimization & Performance (1 open, **6 answered**)
 7. Testing & Validation (2 open, **2 answered**)
 
-**Total**: 15 open questions, **28 answered/decided** (43 total)
+**Total**: 14 open questions, **29 answered/decided** (43 total)
 
 ---
 
@@ -309,16 +309,17 @@
   - Indexed addressing (LDA table,X) works same speed for ZP and RAM
   - ZP is precious (256 bytes) — reserve for frequently-branched-on values and pointers
 
-### Math Routines
+### ✅ Math Routines (ANSWERED)
 **Q6.6**: When to use math routines - cost/benefit?
-- Avoid division in gameplay loop?
-- Pre-compute tables where possible?
-- Fixed-point vs integer math?
-- **Theory**: `learnings/math_routines.md` - All routines documented with cycle costs
-  - Multiply: ~200-300 cycles (general), faster for constants via shifts
-  - Divide: Even slower than multiply
-  - BCD/Base 100: For score display
-- **Answer via**: Profile math usage in game, pre-compute tables where feasible
+- ✅ **ANSWERED**: General routines ~200-250 cycles, prefer shifts for constants
+  - Source: `toys/toy21_math/LEARNINGS.md`
+  - 8x8 multiply: ~200 cycles (shift-and-add), 16-bit result in A:X
+  - 8-bit divide: ~250 cycles (restoring division), quotient=A, remainder=Y
+  - Powers of 2: 2 cycles/shift (always use ASL/LSR)
+  - Known constants: 10-30 cycles (shift+add decomposition)
+  - Frequent variable ops: 256-byte lookup table (4-5 cycles/lookup)
+  - **Avoid division in game loop** — restructure or multiply by inverse
+  - Found and fixed bug in learnings/math_routines.md divide routine
 
 ### ✅ Compression (PARTIALLY ANSWERED)
 **Q6.7**: Compression decompression cost?

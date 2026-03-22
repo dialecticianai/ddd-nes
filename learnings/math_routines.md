@@ -233,27 +233,29 @@ For constant divisors, use "multiply by inverse" technique.
 ; Result: A = quotient, Y = remainder
 ; Destroys: A, X, Y
 ; ~200-250 cycles
+;
+; NOTE: Pre-shift the first bit BEFORE the loop. Using ASL+ROL on the
+; same variable inside the loop causes a double-shift bug (validated toy21).
 
 divide:
   sta dividend
   stx divisor
   lda #0          ; Clear remainder
   ldx #8          ; 8 bits
+  asl dividend    ; Pre-shift: first dividend bit into carry
 
 div_loop:
-  asl dividend    ; Shift dividend left
-  rol a           ; Shift bit into remainder
+  rol a           ; Shift carry into remainder
   cmp divisor
   bcc skip_sub
-  sbc divisor     ; Subtract divisor (carry already set from CMP)
-  sec
+  sbc divisor     ; Subtract (carry set from CMP >= divisor)
 skip_sub:
-  rol dividend    ; Shift result bit into dividend (quotient)
+  rol dividend    ; Shift quotient bit in (carry), next dividend bit out
   dex
   bne div_loop
 
+  tay             ; Y = remainder (was in A)
   lda dividend    ; A = quotient
-  tay             ; Y = remainder (in A from above)
   rts
 
 .zeropage
