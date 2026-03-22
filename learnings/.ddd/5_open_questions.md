@@ -9,20 +9,20 @@
 ## Quick Summary
 
 **Study complete**: 52/100+ wiki pages (all core priorities)
-**Open questions**: 14 practical implementation questions
-**Answered/decided**: 29 questions (Phase 1 + Phase 2 nearly complete)
+**Open questions**: 12 practical implementation questions
+**Answered/decided**: 31 questions (Phase 1 + Phase 2 complete)
 **Primary blockers**: None - Phase 2 DSL (cycle counting) operational
 
 **Categories**:
 1. Toolchain & Development Workflow (7 open, **1 answered**)
 2. Graphics Asset Pipeline (0 open, **5 answered**)
-3. Audio Implementation (3 open, **3 answered**)
+3. Audio Implementation (1 open, **5 answered**)
 4. Game Architecture & Patterns (1 open, **6 answered**)
 5. Mapper Selection & Implementation (1 open, **5 answered**)
 6. Optimization & Performance (1 open, **6 answered**)
 7. Testing & Validation (2 open, **2 answered**)
 
-**Total**: 14 open questions, **29 answered/decided** (43 total)
+**Total**: 12 open questions, **31 answered/decided** (43 total)
 
 ---
 
@@ -136,16 +136,18 @@
 - **Next step**: Integrate FamiTone2 in audio test ROM
 
 **Q3.2**: How to structure SFX vs music priority?
-- Priority by channel (SFX on pulse 2, music on pulse 1/triangle)?
-- Priority by type (important SFX interrupt music)?
-- Ducking (reduce music volume during SFX)?
-- **Answer via**: Implement SFX system, test mixing strategies
+- ✅ **ANSWERED**: Flag-based SFX borrow pattern — SFX takes pulse 2, restores after countdown
+  - Source: `toys/toy22_audio_multi/LEARNINGS.md`
+  - 3 ZP bytes: sfx_trigger, sfx_active (countdown), sfx_completed
+  - NMI checks trigger → borrows channel → counts down → restores
+  - No complex priority queue needed for basic games
 
 **Q3.3**: Cycle budget allocation for audio?
-- **Target**: 1000-1500 cycles/frame (FamiTone2)
-- How much actual headroom after OAM DMA + VRAM updates?
-- Penguin engine (790 cycles) if budget tight?
-- **Answer via**: Profile FamiTone2 update in test ROM
+- ✅ **ANSWERED**: Negligible NMI overhead for per-frame APU updates
+  - Source: `toys/toy22_audio_multi/LEARNINGS.md`
+  - assert_frame_cycles shows normal ~29,781 even on SFX trigger frames
+  - Simple SFX handler uses ~10 instructions per NMI (far less than FamiTone2's 1000-1500)
+  - Generous headroom: OAM DMA + column streaming + audio all fit easily
 
 ### ✅ Music Workflow (ANSWERED)
 **Q3.4**: Composition tool - FamiTracker vs FamiStudio?
