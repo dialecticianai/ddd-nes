@@ -2,7 +2,7 @@
 
 **Last updated**: 2026-03-21
 
-## Test Suite: 213/213 passing (100%)
+## Test Suite: 251/251 passing (100%)
 
 | Toy | Tests | Status | Notes |
 |-----|-------|--------|-------|
@@ -22,15 +22,14 @@
 | toy13_unrom | 4/4 ✓ | Complete | UNROM mapper 2 bank switching |
 | toy14_mmc1 | 4/4 ✓ | Complete | MMC1 mapper 1 serial protocol bank switching |
 | toy15_state_machine | 5/5 ✓ | Complete | 3-state game flow with controller edge detection |
+| toy16_entities | 38/38 ✓ | Complete | Entity storage + OAM sync (4 entities) |
 | debug/0_survey | - | Complete | Emulator research |
 | debug/1_jsnes_wrapper | - | Complete | jsnes harness (16 tests) |
 | debug/2_tetanes | - | Complete | TetaNES investigation (rejected) |
 
 ## Next Candidates (Phase 1 remaining)
 
-1. **toy12_metatiles** - 2x2 metatile compression/decompression
-2. **toy13_unrom** - UNROM bank switching
-3. **toy14_mmc1** - MMC1 interrupt safety
-4. **toy15_state_machine** - Game state transitions
-5. **toy16_entities** - Entity/sprite management
-6. **toy17_collision** - AABB collision detection
+1. **toy17_collision** - AABB collision detection
+
+**Phase 2 (deferred — need cycle counting DSL):**
+- Scrolling, CHR-RAM, audio integration, compression, math benchmarks
