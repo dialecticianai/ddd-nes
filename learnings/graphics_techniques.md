@@ -445,6 +445,26 @@ queue_done:
 4. **Palette changes mid-frame need timing** - Use sprite 0 hit or mapper IRQ; budget cycles carefully
 5. **Incremental updates maximize vblank** - Queue changes during gameplay; batch apply in NMI
 
+## Validated Findings (from toys)
+
+### Asset Pipeline (toy10)
+- **PNG → CHR pipeline works**: `tools/png2chr.pl` converts 128x128 indexed PNG → 8KB CHR-ROM
+- **CHR-ROM inclusion**: `.incbin "tiles.chr"` in CHARS segment, nes.cfg maps to CHR memory
+- **Makefile dependency chain**: PNG → CHR → .o → .nes (rebuild on asset change)
+
+### Attribute Table (toy11)
+- **`assert_nametable` reads attribute bytes** at $23C0-$23FF directly — no special helper needed
+- **Attribute byte formula**: `(BR << 6) | (BL << 4) | (TR << 2) | TL` (2 bits per quadrant)
+- **Address**: `$23C0 + (tile_row / 4) * 8 + (tile_col / 4)` for nametable 0
+- **16x16 pixel granularity** confirmed — design tile art around this constraint
+
+### Metatiles (toy12)
+- **8-byte entries** (power-of-2) beat 5-byte compact: 3x ASL indexing vs multiply-by-5
+- **~4:1 compression** validated: 1 byte level data → 4 nametable tiles + attribute bits
+- **Pair-based attribute packing**: process metatiles in pairs, write attribute byte every 2 entries
+- **Metatiles align with attribute quadrants**: 2x2 tiles = 16x16 pixels = one attribute quadrant
+- **Branch range**: 6502's ±127 byte limit hit in decompression loop — use BEQ/JMP trampoline
+
 ## Reference Files
 
 ---

@@ -148,6 +148,14 @@ Alternative if C is needed: **CC65**
 
 ### Asset Converters (Image to CHR/Nametable)
 
+**png2chr.pl** (ddd-nes project tool) ✅ **In use**
+- Custom Perl script (Imager library) converting 128x128 indexed PNG → 8KB CHR-ROM binary
+- Handles both indexed and RGB PNGs (auto-discovers up to 4 unique colors)
+- `--generate-test` flag creates test tileset programmatically
+- Integrated into Makefile pipeline: `png2chr.pl tiles.png tiles.chr`
+- Location: `tools/png2chr.pl`
+- Validated in toy10, reused in toy11, toy12
+
 **I-CHR** (Kasumi)
 - Converts PC images/sequences to NES tilesets/nametables
 - Can produce ROM displaying graphics

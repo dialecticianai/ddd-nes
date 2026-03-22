@@ -9,20 +9,20 @@
 ## Quick Summary
 
 **Study complete**: 52/100+ wiki pages (all core priorities)
-**Open questions**: 36 practical implementation questions
-**Answered/decided**: 7 questions (sound engine, mapper strategy, optimization policy)
+**Open questions**: 31 practical implementation questions
+**Answered/decided**: 12 questions (sound engine, mapper strategy, optimization policy, graphics pipeline, attributes, metatiles)
 **Primary blockers**: None - all questions answerable through practice
 
 **Categories**:
-1. Toolchain & Development Workflow (8 open)
-2. Graphics Asset Pipeline (5 open)
+1. Toolchain & Development Workflow (7 open, **1 answered**)
+2. Graphics Asset Pipeline (1 open, **4 answered**)
 3. Audio Implementation (3 open, **3 answered**)
 4. Game Architecture & Patterns (7 open)
 5. Mapper Selection & Implementation (3 open, **3 answered**)
 6. Optimization & Performance (6 open, **1 answered**)
 7. Testing & Validation (4 open)
 
-**Total**: 36 open questions, **7 answered/decided** (43 total)
+**Total**: 31 open questions, **12 answered/decided** (43 total)
 
 ---
 
@@ -64,12 +64,14 @@
 - Dependency tracking (rebuild on asset change)?
 - **Answer via**: Create Makefile during first build
 
-### Asset Conversion
+### ✅ Asset Conversion (ANSWERED)
 **Q1.7**: Graphics tools workflow?
-- NEXXT for all tile editing?
-- YY-CHR for quick inspection?
-- Custom scripts for PNG → CHR?
-- **Answer via**: Create first tileset, document steps
+- ✅ **ANSWERED**: Custom `tools/png2chr.pl` (Perl + Imager) converts 128x128 indexed PNG → 8KB CHR-ROM binary
+  - Source: `toys/toy10_graphics_workflow/LEARNINGS.md`
+  - Makefile automates full pipeline: PNG → CHR → assemble → link
+  - `--generate-test` flag creates test tileset programmatically
+  - NEXXT/YY-CHR not needed for current workflow (generate + convert programmatically)
+- **Next step**: Use for all future toys and main game asset pipeline
 
 **Q1.8**: Music data build integration?
 - FamiTracker → text2data → .asm workflow?
@@ -81,31 +83,37 @@
 
 ## 2. Graphics Asset Pipeline
 
-### Tile Design
+### ✅ Tile Design (ANSWERED)
 **Q2.1**: What pixel editor workflow for 4-color constraint?
-- Draw in NEXXT directly?
-- External tool (Aseprite, GraphicsGale) then import?
-- Palette assignment workflow?
-- **Answer via**: Create placeholder graphics, document process
+- ✅ **ANSWERED**: Generate test tilesets programmatically via `png2chr.pl --generate-test`
+  - Source: `toys/toy10_graphics_workflow/LEARNINGS.md`
+  - For production art: any editor that exports 128x128 indexed PNG (4 colors)
+  - png2chr.pl handles both indexed and RGB PNGs (auto-discovers unique colors)
+- **Next step**: Use Aseprite or similar for real game art, feed through pipeline
 
 **Q2.2**: Palette design tools/techniques?
-- Pick colors from NES palette chart?
-- Visual palette editor?
-- Common palette choices for placeholder art?
-- **Answer via**: Design 4 palettes for test ROM
+- ✅ **ANSWERED**: Pick NES palette indices directly in assembly
+  - Source: `toys/toy11_attributes/LEARNINGS.md`
+  - 4 BG palettes at $3F00-$3F0F, 4 colors each (color 0 shared as backdrop)
+  - Validated: loading all 4 palettes and assigning via attribute table works correctly
+- **Next step**: Create NES palette reference chart for art design
 
-### Metatile Systems
+### ✅ Metatile Systems (ANSWERED)
 **Q2.3**: How to efficiently compress level data with metatiles?
-- 2×2 metatiles standard?
-- How to encode (attribute bits + tile indices)?
-- Runtime decompression cost?
-- **Answer via**: Implement metatile system in test ROM
+- ✅ **ANSWERED**: 8-byte metatile entries (4 tiles + palette + 3 padding), power-of-2 indexing via 3x ASL
+  - Source: `toys/toy12_metatiles/LEARNINGS.md`
+  - ~4:1 compression ratio (1 byte level data → 4 nametable tiles + attribute bits)
+  - Pair-based attribute packing (write attribute byte every 2 metatiles)
+  - 24/24 tests validate full decompression
+- **Next step**: Use pattern for main game level data
 
 **Q2.4**: How to handle attribute table granularity (16×16 pixels)?
-- Design metatiles to align with attribute blocks?
-- Accept color bleeding?
-- Mid-frame palette changes workaround?
-- **Answer via**: Test attribute limits in graphics test ROM
+- ✅ **ANSWERED**: Metatiles align perfectly with attribute quadrants (2x2 tiles = 16x16 pixels)
+  - Source: `toys/toy11_attributes/LEARNINGS.md`
+  - Each metatile occupies exactly one attribute quadrant
+  - Design rule: align metatile/level boundaries with 16x16 pixel attribute grid
+  - assert_nametable reads attribute bytes at $23C0-$23FF directly (no new helper needed)
+- **Next step**: Accept constraint in art design — no sub-16x16 palette variation
 
 ### CHR Data Management
 **Q2.5**: When to use CHR-ROM vs CHR-RAM?
