@@ -133,220 +133,75 @@
 
 ---
 
-### Phase 2: Graphics Pipeline (mixed validation)
+### Phase 1 Remaining: Graphics + Architecture (jsnes, no cycle counting)
 
-**toy10_graphics_workflow** - Asset pipeline end-to-end
-- **Focus**: PNG → CHR-ROM, palette design, nametable setup
-- **Play-spec** (Phase 1):
-  ```perl
-  at_frame 1 => sub {
-      assert_tile 5, 3 => 0x42;  # tile in nametable
-      assert_palette 0, 3 => 0x30;  # palette entry
-  };
-  ```
-- **Phase 3 validation**: Visual appearance (colors, patterns)
+**toy10_graphics_workflow** - Asset pipeline end-to-end ✅
+- **Status**: Complete (12/12 tests)
 - **Questions answered**: Q1.7, Q2.1, Q2.2
-- **Updates**: `learnings/graphics_techniques.md` asset pipeline
 
-**toy11_attributes** - Attribute table and color granularity
-- **Focus**: 16×16 pixel attribute blocks, color bleeding
-- **Play-spec** (Phase 1):
-  ```perl
-  at_frame 1 => sub {
-      assert_attribute 1, 1 => 0x01;  # 16x16 block palette
-  };
-  ```
-- **Phase 2 upgrade**: Frame buffer assertions for color boundaries
-- **Phase 3 validation**: Visual attribute alignment
-- **Questions answered**: Q2.4, Q2.3 (partial)
-- **Updates**: `learnings/graphics_techniques.md` attributes
+**toy11_attributes** - Attribute table and color granularity ✅
+- **Status**: Complete (23/23 tests)
+- **Questions answered**: Q2.4
 
----
-
-### Phase 3: Advanced Graphics (Phase 2 DSL required)
-
-**toy12_scrolling** - Nametable streaming
-- **Focus**: Horizontal/vertical scroll, column/row updates
-- **Play-spec** (Phase 2 - requires cycle counting):
-  ```perl
-  at_frame 1 => sub {
-      assert_scroll_x 128;
-      assert_vblank_cycles_lt 2273;  # streaming budget
-  };
-  ```
-- **Phase 3 validation**: Smooth scrolling visually
-- **Questions answered**: Q4.5, Q4.6, Q6.1
-- **Updates**: `learnings/graphics_techniques.md` scrolling
-
-**toy13_chr_ram** - CHR-RAM performance
-- **Focus**: CHR-RAM copy during vblank, tile updates
-- **Play-spec** (Phase 2 - requires cycle counting):
-  ```perl
-  at_frame 1 => sub {
-      assert_chr_tile 0 => 0x00;  # before update
-      assert_vblank_cycles_used { $_ < 1000 };  # 10 tiles budget
-  };
-  at_frame 2 => sub {
-      assert_chr_tile 0 => 0x42;  # after update
-  };
-  ```
-- **Questions answered**: Q2.5, Q7.2
-- **Updates**: `learnings/graphics_techniques.md` CHR-RAM
-
----
-
-### Phase 4: Audio & Advanced Input (deferred validation)
-
-**toy14_audio** - FamiTone2 integration
-- **Focus**: Sound engine integration, music + SFX
-- **Play-spec** (Phase 1 - limited):
-  ```perl
-  at_frame 1 => sub {
-      assert_apu_pulse1_enabled 1;  # channel on
-  };
-  ```
-- **Phase 2 upgrade**: Cycle budget measurement
-- **Phase 3 validation**: Audio output (human listening)
-- **Audio assertions**: Deferred (see TESTING.md Q5)
-- **Questions answered**: Q3.2 (partial), Q3.3, Q3.5, Q3.6
-- **Updates**: `learnings/audio.md`
-
-**toy15_metatiles** - Metatile compression
-- **Focus**: 2×2 metatile system, runtime decompression
-- **Play-spec** (Phase 1):
-  ```perl
-  # Decompress metatile, verify nametable output
-  at_frame 1 => sub {
-      assert_tile 0, 0 => 0x10;  # top-left
-      assert_tile 1, 0 => 0x11;  # top-right
-      assert_tile 0, 1 => 0x20;  # bottom-left
-      assert_tile 1, 1 => 0x21;  # bottom-right
-  };
-  ```
-- **Phase 2 upgrade**: Measure decompression cycles
+**toy12_metatiles** - 2x2 metatile compression
+- **Focus**: Metatile table + decompression to nametable/attributes
 - **Questions answered**: Q2.3, Q6.7 (partial)
-- **Updates**: `learnings/graphics_techniques.md` metatiles
 
----
-
-### Phase 5: Mapper Expansion (automated focus)
-
-**toy16_unrom** - UNROM bank switching
+**toy13_unrom** - UNROM bank switching
 - **Focus**: Bus conflict handling, fixed bank organization
-- **Play-spec** (Phase 1):
-  ```perl
-  at_frame 0 => sub {
-      assert_current_bank 0;
-  };
-  # Switch to bank 1
-  at_frame 1 => sub {
-      assert_current_bank 1;
-      assert_ram 0x50 => 0x42;  # data from bank 1
-  };
-  ```
-- **Phase 3 validation**: All banks accessible
 - **Questions answered**: Q5.4, Q5.5, Q7.1
-- **Updates**: `learnings/mappers.md` UNROM
 
-**toy17_mmc1** - MMC1 interrupt safety
+**toy14_mmc1** - MMC1 interrupt safety
 - **Focus**: Reset+save pattern, NMI during bankswitch
-- **Play-spec** (Phase 1):
-  ```perl
-  # Trigger NMI during bankswitch, verify state
-  at_frame 1 => sub {
-      assert_current_bank 1;  # switch succeeded despite NMI
-  };
-  ```
 - **Questions answered**: Q7.1
-- **Updates**: `learnings/mappers.md` MMC1
 
----
-
-### Phase 6: Game Architecture (mostly Phase 1)
-
-**toy18_state_machine** - Game state transitions
+**toy15_state_machine** - Game state transitions
 - **Focus**: Menu → gameplay → pause flow
-- **Play-spec** (Phase 1):
-  ```perl
-  at_frame 0 => sub {
-      assert_game_state 'menu';  # custom helper
-  };
-  press_button 'Start';
-  at_frame 1 => sub {
-      assert_game_state 'gameplay';
-  };
-  ```
 - **Questions answered**: Q4.1, Q6.3
-- **Updates**: `learnings/architecture_patterns.md` (new doc)
 
-**toy19_entities** - Entity/sprite management
+**toy16_entities** - Entity/sprite management
 - **Focus**: Array of structs, pool allocation, sprite updates
-- **Play-spec** (Phase 1):
-  ```perl
-  at_frame 1 => sub {
-      assert_entity_count 16;
-      assert_entity 0, x => 100, y => 50;
-      assert_sprite 0, x => 100, y => 50;  # entity→sprite sync
-  };
-  ```
-- **Phase 2 upgrade**: Measure entity update cycles
 - **Questions answered**: Q4.2, Q6.4
-- **Updates**: `learnings/architecture_patterns.md` entities
 
-**toy20_collision** - AABB collision detection
-- **Focus**: Bounding box collision, cycle cost measurement
-- **Play-spec** (Phase 1):
-  ```perl
-  # Position entities to collide
-  at_frame 1 => sub {
-      assert_collision_flag 1;  # collision detected
-  };
-  ```
-- **Phase 2 upgrade**: Compare AABB vs pixel-perfect cycles
-- **Questions answered**: Q4.3, Q4.4 (partial), Q6.6 (partial)
-- **Updates**: `learnings/math_routines.md` collision
+**toy17_collision** - AABB collision detection
+- **Focus**: Bounding box collision
+- **Questions answered**: Q4.3, Q4.4 (partial)
 
 ---
 
-### Phase 7: Optimization (Phase 2 heavy)
+### Phase 2: Extended DSL (cycle counting + frame buffer required)
 
-**toy21_compression** - RLE/LZ decompression
-- **Focus**: Decompression cycle costs, vblank budget
-- **Play-spec** (Phase 2 - requires cycle counting):
-  ```perl
-  at_frame 1 => sub {
-      assert_decompress_cycles { $_ < 2000 };  # vblank budget
-      assert_ram 0x0300 => 0x42;  # decompressed data
-  };
-  ```
+_These toys are deferred until Phase 2 DSL is implemented._
+
+**Scrolling** - Nametable streaming (needs vblank cycle budget validation)
+- **Questions answered**: Q4.5, Q4.6, Q6.1
+
+**CHR-RAM** - CHR-RAM copy performance (needs cycle counting)
+- **Questions answered**: Q2.5, Q7.2
+
+**Audio** - FamiTone2 integration (needs cycle budget measurement)
+- **Questions answered**: Q3.2, Q3.3, Q3.5, Q3.6
+
+**Compression** - RLE/LZ decompression benchmarks
 - **Questions answered**: Q6.7, Q6.1
-- **Updates**: `learnings/optimization.md` compression
 
-**toy22_math** - Math routine performance
-- **Focus**: Multiply/divide vs lookup tables
-- **Play-spec** (Phase 2 - requires cycle counting):
-  ```perl
-  at_frame 1 => sub {
-      assert_routine_cycles 'multiply_8x8' => { $_ < 100 };
-      assert_ram 0x20 => 42;  # result
-  };
-  ```
+**Math** - Multiply/divide vs lookup tables
 - **Questions answered**: Q6.6
-- **Updates**: `learnings/math_routines.md`
+
+**Entity/collision upgrades** - Cycle cost measurement for entities + collision
 
 ---
 
 ## Validation Phase Summary
 
-### Phase 1: jsnes (immediate - 10 toys)
-- toy1 (sprite DMA), toy2 (PPU init), toy3 (controller)
-- toy10 (graphics), toy11 (attributes), toy15 (metatiles)
-- toy16 (UNROM), toy17 (MMC1), toy18 (state), toy19 (entities), toy20 (collision)
+### Phase 1: jsnes (18 toys — 12 complete, 6 remaining)
+- ✅ toy0-9: Infrastructure + core subsystems (toolchain, sprites, PPU, controller, NMI, scrolling, audio, palettes, VRAM buffer, sprite 0)
+- ✅ toy10-11: Graphics pipeline + attributes
+- ⏭️ toy12: metatiles, toy13: UNROM, toy14: MMC1, toy15: state machine, toy16: entities, toy17: collision
 
-### Phase 2: Extended DSL (6 toys require cycle counting/frame buffer)
-- toy12 (scrolling), toy13 (CHR-RAM), toy14 (audio - partial)
-- toy19 (entities - upgrade), toy20 (collision - upgrade)
-- toy21 (compression), toy22 (math)
+### Phase 2: Extended DSL (deferred — need cycle counting/frame buffer)
+- Scrolling, CHR-RAM, audio integration, compression, math benchmarks
+- Entity/collision cycle upgrades
 
 ### Phase 3: Human/Mesen2 (all toys - visual/edge cases)
 - Visual appearance validation
@@ -413,41 +268,41 @@
 **Toolchain (8 questions)**:
 - ✅ Q1.1, Q1.2, Q1.3, Q1.6: toy0_toolchain
 - toy1, toy3: Q1.4 (cycle counting - Phase 2)
-- Deferred: Q1.5 (blargg tests), Q1.7 (graphics tools - toy10), Q1.8 (audio - toy14)
+- ✅ Q1.7: toy10 (graphics tools)
+- Deferred: Q1.5 (blargg tests), Q1.8 (audio - Phase 2)
 
 **Graphics (5 questions)**:
-- toy10: Q2.1, Q2.2 (asset workflow, palettes)
-- toy15: Q2.3 (metatiles)
-- toy11: Q2.4 (attributes)
-- toy13: Q2.5 (CHR-RAM vs CHR-ROM)
+- ✅ Q2.1, Q2.2: toy10 (asset workflow, palettes)
+- ✅ Q2.4: toy11 (attributes)
+- toy12: Q2.3 (metatiles)
+- Phase 2: Q2.5 (CHR-RAM vs CHR-ROM)
 
 **Audio (6 questions)**:
 - ✅ Q3.1, Q3.4: Answered in `learnings/audio.md`
-- toy14: Q3.2, Q3.3, Q3.5, Q3.6
+- Phase 2: Q3.2, Q3.3, Q3.5, Q3.6
 
 **Game Architecture (7 questions)**:
-- toy18: Q4.1 (state machine)
-- toy19: Q4.2 (entities)
-- toy20: Q4.3, Q4.4 (collision)
-- toy12: Q4.5, Q4.6 (scrolling)
+- toy15: Q4.1 (state machine)
+- toy16: Q4.2 (entities)
+- toy17: Q4.3, Q4.4 (collision)
+- Phase 2: Q4.5, Q4.6 (scrolling)
 - Implicit: Q4.7 (code organization)
 
 **Mappers (6 questions)**:
 - ✅ Q5.1, Q5.3: Answered in `learnings/mappers.md`
 - Deferred: Q5.2 (needs SPEC.md game genre)
-- toy16: Q5.4, Q5.5 (UNROM)
-- toy17: Q5.6 (MMC1)
+- toy13: Q5.4, Q5.5 (UNROM)
+- toy14: Q5.6 (MMC1)
 
 **Optimization (6 questions)**:
 - ✅ Q6.5: Answered in `learnings/optimization.md`
-- toy1+: Q6.1, Q6.2 (profiling workflow - Phase 2)
-- toy18: Q6.3, Q6.4 (zero page allocation)
-- toy22: Q6.6 (math benchmarks)
-- toy21: Q6.7 (compression)
+- Phase 2: Q6.1, Q6.2 (profiling workflow)
+- toy15: Q6.3, Q6.4 (zero page allocation)
+- Phase 2: Q6.6 (math benchmarks), Q6.7 (compression)
 
 **Testing (4 questions)**:
-- toy16, toy17: Q7.1 (bank switch testing)
-- toy13: Q7.2 (CHR-RAM performance)
+- toy13, toy14: Q7.1 (bank switch testing)
+- Phase 2: Q7.2 (CHR-RAM performance)
 - Deferred: Q7.3, Q7.4 (real hardware)
 
 ---
@@ -475,34 +330,27 @@
 
 **Completed:**
 - ✅ NES::Test Phase 1 implemented (lib/NES/Test.pm, NES::Test::Toy.pm)
-- ✅ toy0 retrofitted with play-spec (validation)
-- ✅ toy1_sprite_dma built with automated validation (20/20 tests, 45 min)
-- ✅ toy2_ppu_init built with automated validation (5/5 tests, 30 min)
-- ✅ toy3_controller partial (2/2 tests, 6 skipped, timeboxed - controller bug)
-- ✅ toy4_nmi built with automated validation (18/18 tests, 45 min)
-- ✅ toy5_scrolling built with automated validation (15/15 tests, 20 min)
-- ✅ toy6_audio built with automated validation (7/7 tests, pulse tone + FFT)
-- ✅ toy7_palettes built with automated validation (15/15 tests, RAM + mirroring + jsnes fix)
-- ✅ toy8_vram_buffer built with automated validation (52/52 tests, VRAM update buffer)
-- ✅ toy9_sprite0 built with automated validation (1/1 tests, sprite 0 hit detection)
+- ✅ toy0-9: Core subsystems (toolchain, sprites, PPU, controller, NMI, scrolling, audio, palettes, VRAM buffer, sprite 0)
+- ✅ toy10_graphics_workflow (12/12 tests, PNG → CHR-ROM → nametable pipeline)
+- ✅ toy11_attributes (23/23 tests, attribute table multi-palette encoding)
 
-**Immediate (next session):**
-1. **toy10_graphics_workflow** - Asset pipeline end-to-end (PNG → CHR-ROM)
-   - Answers Q1.7, Q2.1, Q2.2
-   - Foundation for all visual content
-2. Build with TDD workflow (LEARNINGS → SPEC → PLAN → implement)
-3. Continue validating NES::Test Phase 1 capabilities (141/141 tests passing)
+**Immediate (Phase 1 remaining):**
+1. **toy12_metatiles** - 2x2 metatile decompression (Q2.3)
+2. **toy13_unrom** - UNROM bank switching (Q5.4, Q5.5)
+3. **toy14_mmc1** - MMC1 interrupt safety (Q5.6, Q7.1)
+4. **toy15_state_machine** - Game state transitions (Q4.1, Q6.3)
+5. **toy16_entities** - Entity/sprite management (Q4.2, Q6.4)
+6. **toy17_collision** - AABB collision detection (Q4.3, Q4.4)
 
-**Medium-term:**
-- toy11_attributes (color granularity), toy15_metatiles (level data)
-- Evaluate Phase 1 limitations (which toys need Phase 2?)
+**After Phase 1 complete:**
+- Evaluate Phase 1 limitations across all toys
 - Decide Phase 2 emulator backend (cycle counting + frame buffer)
+- Implement Phase 2 DSL
+- Build Phase 2 toys (scrolling, CHR-RAM, audio, compression, math)
 
 **Long-term:**
-- Implement Phase 2 DSL when limits hit
-- Build remaining toys (12-22)
 - Start game prototype with validated patterns
 
 ---
 
-**Status: Phase 1 progressing excellently.** 10 hardware toys complete (141/141 tests passing, 100%), TDD workflow validated, jsnes accuracy confirmed + improved (palette bug fix).
+**Status: Phase 1 nearing completion.** 12 toys complete (176/176 tests passing, 100%), 6 remaining Phase 1 toys. TDD workflow validated, jsnes accuracy confirmed.

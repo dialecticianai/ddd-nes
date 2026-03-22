@@ -2,7 +2,7 @@
 
 **Last updated**: 2026-03-21
 
-## Test Suite: 176/176 passing (100%)
+## Test Suite: 200/200 passing (100%)
 
 | Toy | Tests | Status | Notes |
 |-----|-------|--------|-------|
@@ -18,12 +18,16 @@
 | toy9_sprite0 | 1/1 ✓ | Complete | Sprite 0 hit detection (play-spec.pl only) |
 | toy10_graphics_workflow | 12/12 ✓ | Complete | PNG → CHR-ROM → nametable pipeline |
 | toy11_attributes | 23/23 ✓ | Complete | Attribute table multi-palette encoding |
+| toy12_metatiles | 24/24 ✓ | Complete | 2x2 metatile decompression (~4:1 compression) |
 | debug/0_survey | - | Complete | Emulator research |
 | debug/1_jsnes_wrapper | - | Complete | jsnes harness (16 tests) |
 | debug/2_tetanes | - | Complete | TetaNES investigation (rejected) |
 
-## Next Candidates
+## Next Candidates (Phase 1 remaining)
 
-1. **toy10_graphics_workflow** - Asset pipeline end-to-end (PNG → CHR-ROM)
-2. **toy11_attributes** - Attribute table and color granularity
-3. **toy12_metatiles** - 2x2 metatile compression/decompression
+1. **toy12_metatiles** - 2x2 metatile compression/decompression
+2. **toy13_unrom** - UNROM bank switching
+3. **toy14_mmc1** - MMC1 interrupt safety
+4. **toy15_state_machine** - Game state transitions
+5. **toy16_entities** - Entity/sprite management
+6. **toy17_collision** - AABB collision detection
