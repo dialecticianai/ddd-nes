@@ -9,20 +9,20 @@
 ## Quick Summary
 
 **Study complete**: 52/100+ wiki pages (all core priorities)
-**Open questions**: 29 practical implementation questions
-**Answered/decided**: 14 questions (sound engine, mapper strategy, optimization policy, graphics pipeline, attributes, metatiles, UNROM bank switching)
-**Primary blockers**: None - all questions answerable through practice
+**Open questions**: 21 practical implementation questions
+**Answered/decided**: 22 questions (all Phase 1 toys complete)
+**Primary blockers**: None - remaining questions need Phase 2 DSL (cycle counting)
 
 **Categories**:
 1. Toolchain & Development Workflow (7 open, **1 answered**)
 2. Graphics Asset Pipeline (1 open, **4 answered**)
 3. Audio Implementation (3 open, **3 answered**)
-4. Game Architecture & Patterns (7 open)
+4. Game Architecture & Patterns (3 open, **4 answered**)
 5. Mapper Selection & Implementation (1 open, **5 answered**)
-6. Optimization & Performance (6 open, **1 answered**)
+6. Optimization & Performance (4 open, **3 answered**)
 7. Testing & Validation (4 open)
 
-**Total**: 29 open questions, **14 answered/decided** (43 total)
+**Total**: 21 open questions, **22 answered/decided** (43 total)
 
 ---
 
@@ -168,30 +168,38 @@
 
 ## 4. Game Architecture & Patterns
 
-### State Management
+### ✅ State Management (ANSWERED)
 **Q4.1**: State machine patterns for game flow?
-- Menu → gameplay → pause → game over transitions?
-- How to structure state handlers?
-- Where to store current state (zero page byte)?
-- **Answer via**: Implement state machine in simple game prototype
+- ✅ **ANSWERED**: Single ZP byte + CMP/BEQ dispatch in NMI handler
+  - Source: `toys/toy15_state_machine/LEARNINGS.md`
+  - 3 states (menu/gameplay/paused), Start button transitions
+  - Button edge detection: `EOR prev; AND current` (3 instructions)
+  - No jump table needed for small state counts (<8)
+- **Next step**: Use pattern in main game
 
 **Q4.2**: Entity system for multiple sprites?
-- Array of structs (x, y, velocity, type, state)?
-- How many entities to support (16? 32? 64?)?
-- Pool allocation or fixed slots?
-- **Answer via**: Implement enemy manager in game prototype
+- ✅ **ANSWERED**: Array-of-structs, 8-byte stride at $0300+
+  - Source: `toys/toy16_entities/LEARNINGS.md`
+  - Fields: x, y, tile, attr, type, state, pad, pad
+  - 4 entities = 32 bytes, scales to 16 (128 bytes)
+  - NMI syncs entity → OAM with field reorder + DMA
+  - ZP for counters only, entity data in regular RAM
+- **Next step**: Use pattern in main game
 
-### Collision Detection
+### ✅ Collision Detection (ANSWERED)
 **Q4.3**: Bounding box collision patterns for 6502?
-- AABB (Axis-Aligned Bounding Box) standard?
-- Tile-based collision (background)?
-- Sprite-sprite collision (enemies, bullets)?
-- **Answer via**: Implement collision in platformer test ROM
+- ✅ **ANSWERED**: SEC/SBC for difference, carry for sign, EOR/ADC for abs, CMP for threshold
+  - Source: `toys/toy17_collision/LEARNINGS.md`
+  - ~20 instructions for full 2-axis AABB check
+  - 3 scenarios validated: overlap, miss, edge touch
+- **Next step**: Use pattern for sprite-sprite collision in game
 
 **Q4.4**: Pixel-perfect collision worth the cycles?
-- AABB sufficient for most games?
-- Pixel-perfect for specific cases (puzzle games)?
-- **Answer via**: Measure cycle cost of both approaches
+- ✅ **ANSWERED**: No — AABB sufficient for action/platformer games
+  - Source: `toys/toy17_collision/LEARNINGS.md`
+  - 8x8 boxes match sprite size naturally
+  - Pixel-perfect would require CHR-ROM pixel mask reads — vastly more expensive
+  - Only consider for puzzle games with irregular shapes
 
 ### Level Streaming
 **Q4.5**: How to load/unload level data dynamically?
@@ -277,17 +285,22 @@
 - **Theory**: `learnings/timing_and_interrupts.md` - Instruction cycle reference provided
 - **Answer via**: Use Mesen profiler on test ROM routines (same as Q1.4)
 
-### Zero Page Allocation
+### ✅ Zero Page Allocation (ANSWERED)
 **Q6.3**: How to manage 256 bytes of zero page?
-- Reserve ranges per subsystem (e.g., $00-$1F: temp, $20-$3F: game state)?
-- Document allocation in CODE_MAP.md?
-- Naming conventions (zp_temp, zp_player_x)?
-- **Answer via**: Create zero page allocation map in first ROM
+- ✅ **ANSWERED**: Reserve $10+ for game variables, group by subsystem
+  - Source: `toys/toy15_state_machine/LEARNINGS.md`, `toys/toy16_entities/LEARNINGS.md`
+  - Pattern: $10-$14 for state/counters/buttons, $20+ for collision temps
+  - Use ca65 `.segment "ZEROPAGE"` with named labels (not magic numbers)
+  - Entity data stays in regular RAM ($0300+), only counters in ZP
+- **Next step**: Document full ZP allocation map when building main game
 
 **Q6.4**: Which variables deserve zero page?
-- Hot variables (read/written every frame)?
-- Pointer indirection (required for indirect addressing)?
-- **Answer via**: Profile variable access patterns, move hot vars to ZP
+- ✅ **ANSWERED**: Counters, flags, loop temps, button state — NOT bulk entity data
+  - Source: `toys/toy16_entities/LEARNINGS.md`
+  - ZP for: game_state, frame_counter, buttons, buttons_prev, collision results
+  - Regular RAM for: entity tables, shadow OAM, VRAM buffers
+  - Indexed addressing (LDA table,X) works same speed for ZP and RAM
+  - ZP is precious (256 bytes) — reserve for frequently-branched-on values and pointers
 
 ### Math Routines
 **Q6.6**: When to use math routines - cost/benefit?

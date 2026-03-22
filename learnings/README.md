@@ -76,6 +76,9 @@ tools/add-attribution.pl learnings/new_doc.md
 ### Mappers (Priority 5)
 - **[mappers.md](mappers.md)** - Bank switching, CHR-ROM vs CHR-RAM, UNROM/MMC1 programming
 
+### Game Architecture (from toys)
+- **[architecture_patterns.md](architecture_patterns.md)** - State machine, entity system, AABB collision (validated in toys 15-17)
+
 ---
 
 ## How to Use These Docs
