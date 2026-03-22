@@ -2,7 +2,7 @@
 
 **Last updated**: 2026-03-21
 
-## Test Suite: 208/208 passing (100%)
+## Test Suite: 213/213 passing (100%)
 
 | Toy | Tests | Status | Notes |
 |-----|-------|--------|-------|
@@ -21,6 +21,7 @@
 | toy12_metatiles | 24/24 ✓ | Complete | 2x2 metatile decompression (~4:1 compression) |
 | toy13_unrom | 4/4 ✓ | Complete | UNROM mapper 2 bank switching |
 | toy14_mmc1 | 4/4 ✓ | Complete | MMC1 mapper 1 serial protocol bank switching |
+| toy15_state_machine | 5/5 ✓ | Complete | 3-state game flow with controller edge detection |
 | debug/0_survey | - | Complete | Emulator research |
 | debug/1_jsnes_wrapper | - | Complete | jsnes harness (16 tests) |
 | debug/2_tetanes | - | Complete | TetaNES investigation (rejected) |
