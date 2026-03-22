@@ -36,6 +36,8 @@ our @EXPORT = qw(
     assert_audio_playing
     assert_silence
     assert_frequency_near
+    assert_frame_cycles
+    assert_frame_cycles_lt
 );
 
 our $VERSION = '0.01';
@@ -360,6 +362,30 @@ sub assert_ppu_status {
         # Old behavior: exact match
         is($actual, $expected, sprintf("PPU STATUS = 0x%02X", $expected));
     }
+}
+
+sub assert_frame_cycles {
+    my ($expected, $msg) = @_;
+
+    croak "No emulator state" unless $emulator_state;
+
+    my $actual = $emulator_state->{frameCycles};
+
+    if (ref $expected eq 'CODE') {
+        local $_ = $actual;
+        ok($expected->(), $msg || "Frame cycles ($actual) matches condition");
+    } else {
+        is($actual, $expected, $msg || sprintf("Frame cycles = %d", $expected));
+    }
+}
+
+sub assert_frame_cycles_lt {
+    my ($limit, $msg) = @_;
+
+    croak "No emulator state" unless $emulator_state;
+
+    my $actual = $emulator_state->{frameCycles};
+    ok($actual < $limit, $msg || sprintf("Frame cycles %d < %d", $actual, $limit));
 }
 
 sub assert_palette {
