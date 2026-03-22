@@ -9,20 +9,20 @@
 ## Quick Summary
 
 **Study complete**: 52/100+ wiki pages (all core priorities)
-**Open questions**: 18 practical implementation questions
-**Answered/decided**: 25 questions (Phase 1 complete + Phase 2 started)
-**Primary blockers**: None - Phase 2 DSL (cycle counting) now operational
+**Open questions**: 16 practical implementation questions
+**Answered/decided**: 27 questions (Phase 1 complete + Phase 2 in progress)
+**Primary blockers**: None - Phase 2 DSL (cycle counting) operational
 
 **Categories**:
 1. Toolchain & Development Workflow (7 open, **1 answered**)
-2. Graphics Asset Pipeline (1 open, **4 answered**)
+2. Graphics Asset Pipeline (0 open, **5 answered**)
 3. Audio Implementation (3 open, **3 answered**)
 4. Game Architecture & Patterns (1 open, **6 answered**)
 5. Mapper Selection & Implementation (1 open, **5 answered**)
 6. Optimization & Performance (3 open, **4 answered**)
-7. Testing & Validation (4 open)
+7. Testing & Validation (2 open, **2 answered**)
 
-**Total**: 18 open questions, **25 answered/decided** (43 total)
+**Total**: 16 open questions, **27 answered/decided** (43 total)
 
 ---
 
@@ -115,11 +115,13 @@
   - assert_nametable reads attribute bytes at $23C0-$23FF directly (no new helper needed)
 - **Next step**: Accept constraint in art design — no sub-16x16 palette variation
 
-### CHR Data Management
+### ✅ CHR Data Management (ANSWERED)
 **Q2.5**: When to use CHR-ROM vs CHR-RAM?
-- Depends on game genre (decided after SPEC.md)
-- Action/platformer → CHR-ROM (speed)
-- RPG/puzzle → CHR-RAM (flexibility)
+- ✅ **ANSWERED**: Both validated — CHR-ROM (toy10) and CHR-RAM (toy19) work in jsnes
+  - Source: `toys/toy19_chr_ram/LEARNINGS.md`
+  - CHR-RAM: header byte 5 = $00, no CHR segment in nes.cfg, copy tiles via PPUADDR/PPUDATA
+  - Runtime budget: ~18 tiles/frame during vblank (better than 10-tile theory estimate)
+  - Decision still depends on game genre: CHR-ROM for action, CHR-RAM for text/dynamic
 - **Answer via**: Prototype with both in test ROMs
 
 ---
@@ -346,12 +348,13 @@
 - Test NMI/IRQ during bankswitch (MMC1)?
 - **Answer via**: Create bank switch test ROM
 
-### CHR-RAM Performance
+### ✅ CHR-RAM Performance (ANSWERED)
 **Q7.2**: What's the actual CHR-RAM copy performance?
-- **Theory**: 10 tiles/frame (160 bytes)
-- Measure actual cycle cost in vblank
-- Need double-buffering for large updates?
-- **Answer via**: Profile CHR copy routine in test ROM
+- ✅ **ANSWERED**: ~18 tiles/frame during vblank (288 bytes), better than 10-tile estimate
+  - Source: `toys/toy19_chr_ram/LEARNINGS.md`
+  - Each tile = 16 PPUDATA writes = ~96 cycles
+  - ~1760 cycles available after OAM DMA → ~18 tiles max
+  - No double-buffering needed for typical use (10-15 tiles/frame is plenty)
 
 ### Real Hardware Testing
 **Q7.3**: When to test on real hardware?
