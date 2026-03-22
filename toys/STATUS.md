@@ -2,7 +2,7 @@
 
 **Last updated**: 2026-03-21
 
-## Test Suite: 251/251 passing (100%)
+## Test Suite: 255/255 passing (100%)
 
 | Toy | Tests | Status | Notes |
 |-----|-------|--------|-------|
@@ -23,13 +23,12 @@
 | toy14_mmc1 | 4/4 ✓ | Complete | MMC1 mapper 1 serial protocol bank switching |
 | toy15_state_machine | 5/5 ✓ | Complete | 3-state game flow with controller edge detection |
 | toy16_entities | 38/38 ✓ | Complete | Entity storage + OAM sync (4 entities) |
+| toy17_collision | 4/4 ✓ | Complete | AABB collision detection (3 scenarios) |
 | debug/0_survey | - | Complete | Emulator research |
 | debug/1_jsnes_wrapper | - | Complete | jsnes harness (16 tests) |
 | debug/2_tetanes | - | Complete | TetaNES investigation (rejected) |
 
-## Next Candidates (Phase 1 remaining)
-
-1. **toy17_collision** - AABB collision detection
+## Next Candidates
 
 **Phase 2 (deferred — need cycle counting DSL):**
 - Scrolling, CHR-RAM, audio integration, compression, math benchmarks
