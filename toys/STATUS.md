@@ -2,7 +2,7 @@
 
 **Last updated**: 2026-03-21
 
-## Test Suite: 200/200 passing (100%)
+## Test Suite: 204/204 passing (100%)
 
 | Toy | Tests | Status | Notes |
 |-----|-------|--------|-------|
@@ -19,6 +19,7 @@
 | toy10_graphics_workflow | 12/12 ✓ | Complete | PNG → CHR-ROM → nametable pipeline |
 | toy11_attributes | 23/23 ✓ | Complete | Attribute table multi-palette encoding |
 | toy12_metatiles | 24/24 ✓ | Complete | 2x2 metatile decompression (~4:1 compression) |
+| toy13_unrom | 4/4 ✓ | Complete | UNROM mapper 2 bank switching |
 | debug/0_survey | - | Complete | Emulator research |
 | debug/1_jsnes_wrapper | - | Complete | jsnes harness (16 tests) |
 | debug/2_tetanes | - | Complete | TetaNES investigation (rejected) |

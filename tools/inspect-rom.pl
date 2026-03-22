@@ -134,8 +134,31 @@ for my $rom_path (@roms) {
         printf "  IRQ   (\$FFFE): \$%04X  [%02X %02X]\n", $irq_vector, $vec_bytes[4], $vec_bytes[5];
 
         # Show first 64 bytes at reset vector (if it points into PRG-ROM)
-        if ($reset_vector >= 0x8000 && $reset_vector < 0x8000 + $prg_size) {
-            my $code_offset = 16 + ($reset_vector - 0x8000);
+        # The vectors are in the last bank, so the reset vector address maps
+        # to the end of the PRG-ROM data. For any mapper:
+        #   file_offset = header + prg_size - ($10000 - reset_vector)
+        # For NROM with reset at $8000 (mirrored): the mirror means we should
+        # read from offset within the first bank instead.
+        if ($reset_vector >= 0x8000 && $reset_vector < 0x10000) {
+            # Map CPU address to file offset within PRG-ROM.
+            # PRG-ROM fills $8000-$FFFF (32KB window). For ROMs smaller than
+            # 32KB, the address space mirrors. Use modulo to handle both cases.
+            my $prg_window = ($prg_size >= 32768) ? $prg_size : 32768;
+            my $addr_in_window = ($reset_vector - 0x8000) % $prg_window;
+            # For multi-bank ROMs, the reset vector is in the last bank.
+            # Map into the last 32KB of PRG data.
+            my $code_offset;
+            if ($prg_size <= 32768) {
+                $code_offset = 16 + ($addr_in_window % $prg_size);
+            } else {
+                # Multi-bank: $C000+ is always the last 16KB
+                if ($reset_vector >= 0xC000) {
+                    $code_offset = 16 + $prg_size - (0x10000 - $reset_vector);
+                } else {
+                    # $8000-$BFFF = first switchable bank (bank 0)
+                    $code_offset = 16 + ($reset_vector - 0x8000);
+                }
+            }
             seek $fh, $code_offset, 0;
             my $code_sample;
             my $code_len = 64;
