@@ -465,6 +465,14 @@ queue_done:
 - **Metatiles align with attribute quadrants**: 2x2 tiles = 16x16 pixels = one attribute quadrant
 - **Branch range**: 6502's ±127 byte limit hit in decompression loop — use BEQ/JMP trampoline
 
+### Scrolling Column Streaming (toy18)
+- **30-tile column write fits in vblank**: OAM DMA + column + scroll update all complete within ~29,781 cycle frame
+- **16-bit ZP pointer**: Calculate `$2000 + row*32 + col` with addr_lo/addr_hi, increment by 32 per row
+- **BIT PPUSTATUS before each PPUADDR pair**: Essential — resets address latch
+- **Column ahead of scroll**: Write `(scroll_col + 2) & 31` — 2 columns ahead of scroll edge
+- **Phase 2 cycle counting**: `assert_frame_cycles` validates no NMI overruns
+- **Explicit PPUADDR per tile is reliable**: Safer than +32 increment mode for testing
+
 ## Reference Files
 
 ---

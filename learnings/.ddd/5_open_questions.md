@@ -9,20 +9,20 @@
 ## Quick Summary
 
 **Study complete**: 52/100+ wiki pages (all core priorities)
-**Open questions**: 21 practical implementation questions
-**Answered/decided**: 22 questions (all Phase 1 toys complete)
-**Primary blockers**: None - remaining questions need Phase 2 DSL (cycle counting)
+**Open questions**: 18 practical implementation questions
+**Answered/decided**: 25 questions (Phase 1 complete + Phase 2 started)
+**Primary blockers**: None - Phase 2 DSL (cycle counting) now operational
 
 **Categories**:
 1. Toolchain & Development Workflow (7 open, **1 answered**)
 2. Graphics Asset Pipeline (1 open, **4 answered**)
 3. Audio Implementation (3 open, **3 answered**)
-4. Game Architecture & Patterns (3 open, **4 answered**)
+4. Game Architecture & Patterns (1 open, **6 answered**)
 5. Mapper Selection & Implementation (1 open, **5 answered**)
-6. Optimization & Performance (4 open, **3 answered**)
+6. Optimization & Performance (3 open, **4 answered**)
 7. Testing & Validation (4 open)
 
-**Total**: 21 open questions, **22 answered/decided** (43 total)
+**Total**: 18 open questions, **25 answered/decided** (43 total)
 
 ---
 
@@ -201,18 +201,20 @@
   - Pixel-perfect would require CHR-ROM pixel mask reads — vastly more expensive
   - Only consider for puzzle games with irregular shapes
 
-### Level Streaming
+### ✅ Level Streaming (ANSWERED)
 **Q4.5**: How to load/unload level data dynamically?
-- Stream from ROM during scrolling?
-- Pre-decompress full level to RAM?
-- Trade-off: ROM space vs RAM space?
-- **Answer via**: Implement scrolling level in test ROM
+- ✅ **ANSWERED**: Stream columns during scrolling, write to nametable in NMI
+  - Source: `toys/toy18_scrolling_budget/LEARNINGS.md`
+  - Write 2 columns ahead of scroll edge: `(scroll_x/8 + 2) & 31`
+  - 30-tile column write via explicit PPUADDR per tile, 16-bit ZP pointer
+  - Fits easily within vblank budget alongside OAM DMA + scroll update
 
 **Q4.6**: Nametable streaming during scrolling?
-- Column-at-a-time (vertical scrolling)?
-- Row-at-a-time (horizontal scrolling)?
-- Cycle budget for streaming?
-- **Answer via**: Implement scrolling with nametable updates
+- ✅ **ANSWERED**: Column-at-a-time for horizontal scrolling, validated with cycle counting
+  - Source: `toys/toy18_scrolling_budget/LEARNINGS.md`
+  - 30 tiles per column, each tile = BIT PPUSTATUS + 2 PPUADDR + 1 PPUDATA
+  - Total column write + OAM DMA + scroll update all fit in ~29,781 cycle frame
+  - Phase 2 assert_frame_cycles confirms no overruns
 
 ### Code Organization
 **Q4.7**: How to structure code for maintainability?
@@ -273,11 +275,14 @@
 
 ## 6. Optimization & Performance
 
-### When to Optimize
+### ✅ When to Optimize (PARTIALLY ANSWERED)
 **Q6.1**: Premature vs necessary optimization?
-- Optimize vblank code always (strict budget)?
-- Profile first for non-critical code?
-- **Answer via**: Profile test ROM, identify bottlenecks
+- ✅ **PARTIALLY ANSWERED**: Vblank budget has generous headroom for typical NMI work
+  - Source: `toys/toy18_scrolling_budget/LEARNINGS.md`
+  - OAM DMA + 30-tile column + scroll update all fit easily in vblank
+  - Phase 2 assert_frame_cycles validates no overruns
+  - For now: don't optimize unless assert_frame_cycles shows problems
+  - Remaining: need to test with heavier NMI loads (full game loop)
 
 **Q6.2**: How to measure actual cycle usage?
 - Mesen debugger cycle counter?
